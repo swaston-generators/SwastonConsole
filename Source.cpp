@@ -3,6 +3,8 @@
 #include "utf8_tools.h"
 
 #include <string.h>
+#include <stdio.h>
+#include <cstdlib>
 
 #ifdef _WIN32
 #include <io.h>

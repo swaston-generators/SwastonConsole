@@ -1,5 +1,6 @@
 #include "utf8_tools.h"
 #include "utf8.h"
+#include <stdint.h>
 
 std::string utf8_join(const std::string& s, const std::string& separator) {
 	std::string back;
@@ -81,7 +82,7 @@ std::string utf8_repeat(const std::string& s, int n) {
 
 std::vector<std::string> utf8_to_vector(const std::string& s) {
 	std::string::const_iterator begin = s.begin();
-	auto end = s.end();
+	std::string::const_iterator end = s.end();
 
 	std::vector<std::string> vec;
 
