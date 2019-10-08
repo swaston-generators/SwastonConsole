@@ -3,6 +3,8 @@
 #include "utf8.h"
 #include "utf8_tools.h"
 
+#include <string>
+
 std::string generate_swaston(const std::string& s) {
 	std::string
 		l_spaced_word = utf8_join(s, " "),

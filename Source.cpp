@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <cstdlib>
+#include <string>
 
 #ifdef _WIN32
 #include <io.h>
@@ -39,7 +40,7 @@ std::string utf8_scanf() {
 	}
 	void *input = malloc(sizeof(wchar_t) * buf);
 	
-	if (input == nullptr){
+	if (input == NULL){
         free(input);
 		fprintf(stdout, "Cannot allocate memory");
 		exit(-1);

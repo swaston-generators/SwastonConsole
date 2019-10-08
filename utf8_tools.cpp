@@ -1,6 +1,8 @@
 #include "utf8_tools.h"
 #include "utf8.h"
 #include <stdint.h>
+#include <string>
+#include <vector>
 
 std::string utf8_join(const std::string& s, const std::string& separator) {
 	std::string back;
