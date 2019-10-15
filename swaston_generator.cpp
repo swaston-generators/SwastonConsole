@@ -1,7 +1,7 @@
-#include "swaston_generator.h"
+#include "include/swaston_generator.h"
 
-#include "utf8.h"
-#include "utf8_tools.h"
+#include "include/utf8.h"
+#include "include/utf8_tools.h"
 
 #include <string>
 
