@@ -5,78 +5,74 @@
 #include <vector>
 
 std::string utf8_join(const std::string &s, const std::string &separator) {
-    std::string back;
+    std::string result;
     std::string::const_iterator begin = s.begin();
     std::string::const_iterator end = s.end();
     uint32_t cp = 0;
 
     while (true) {
         cp = utf8::next(begin, end);
-        utf8::append(cp, std::back_inserter(back));
+        utf8::append(cp, std::back_inserter(result));
 
         if (begin != end) {
-            back.append(separator);
+            result.append(std::string(separator));
         } else {
             break;
         }
 
     }
-    return back;
+    return result;
 
 }
 
 std::string utf8_reverse(const std::string &s) {
-    std::string back;
+    std::string result;
     std::string::const_iterator begin = s.begin();
     std::string::const_iterator end = s.end();
     uint32_t cp = 0;
 
     while (begin != end) {
         cp = utf8::prior(end, begin);
-        utf8::append(cp, std::back_inserter(back));
+        utf8::append(cp, std::back_inserter(result));
     }
 
-    return back;
-
+    return result;
 }
 
 
-std::string utf8_substr(const std::string &s, int st, int en) {
-
+std::string utf8_substr(const std::string &s, size_t st, size_t en) {
     if (en > 0 && st > en) {
         throw std::out_of_range("Start index is bigger than end!");
     }
 
-    std::string back;
+    std::string result;
     std::string::const_iterator begin = s.begin();
     std::string::const_iterator end = s.end();
     uint32_t cp = 0;
-    int counter = 0;
+    size_t counter = 0;
     while (begin != end) {
         if (counter < st) {
+            utf8::next(begin, end);
+        } else if (en == 0 || counter + 1 < en) {
             cp = utf8::next(begin, end);
-        } else if (en == 0 || counter < en - 1) {
-
-            cp = utf8::next(begin, end);
-            utf8::append(cp, std::back_inserter(back));
+            utf8::append(cp, std::back_inserter(result));
         } else if (counter == en) {
             cp = utf8::next(begin, end);
-            utf8::append(cp, std::back_inserter(back));
+            utf8::append(cp, std::back_inserter(result));
             break;
         }
         counter++;
 
     }
-    return back;
+    return result;
 }
 
-
-std::string utf8_repeat(const std::string &s, int n) {
-    std::string temp;
-    for (int c = 1; c <= n; c++) {
-        temp.append(s);
+std::string utf8_repeat(const std::string &s, size_t n) {
+    std::string result;
+    for (size_t c = 1; c <= n; c++) {
+        result.append(s);
     }
-    return temp;
+    return result;
 }
 
 std::vector<std::string> utf8_to_vector(const std::string &s) {
@@ -88,9 +84,9 @@ std::vector<std::string> utf8_to_vector(const std::string &s) {
     uint32_t cp = 0;
     while (begin != end) {
         cp = utf8::next(begin, end);
-        std::string back;
-        utf8::append(cp, std::back_inserter(back));
-        vec.push_back(back);
+        std::string result;
+        utf8::append(cp, std::back_inserter(result));
+        vec.push_back(result);
     }
     return vec;
 }
