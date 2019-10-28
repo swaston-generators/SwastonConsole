@@ -4,6 +4,9 @@
 #include <string>
 
 std::string generate_swaston(const std::string &s) {
+    if (utf8::distance(s.begin(), s.end()) < 2) {
+        return s;
+    }
     std::string
             l_spaced_word = utf8_join(s, " "),
             r_spaced_word = utf8_reverse(utf8_join(s, " ")),
@@ -28,7 +31,7 @@ std::string generate_swaston(const std::string &s) {
             upper += t;
             upper += l_spaced_word;
             upper += '\n';
-        } else if (c != size - size_t(1)) {
+        } else if (c + 1 != size) {
             upper += l_vec[c];
             upper += t;
             upper += r_vec[c];
@@ -41,7 +44,7 @@ std::string generate_swaston(const std::string &s) {
     for (size_t c = 0; c != size; c++) { // lower side
         if (c == 0) { // case first row (center)
             continue;
-        } else if (c != size - size_t(1)) {
+        } else if (c + 1 != size) {
             lower += t;
             lower += ' ';
             lower += l_vec[c];
