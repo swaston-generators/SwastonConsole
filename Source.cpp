@@ -78,7 +78,11 @@ std::string utf8_getstring() {
         if (i == current_size) {
             current_size = i + buf_size;
             p_str = (chartype *) realloc(p_str, sizeof(chartype) * current_size);
+            if (p_str == NULL) {
+                throw std::bad_alloc();
+            }
         }
+
     }
 
 
@@ -90,8 +94,7 @@ std::string utf8_getstring() {
 #endif
 //free it
     free(p_str);
-    return
-            s;
+    return s;
 
 }
 
