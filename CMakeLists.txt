@@ -7,9 +7,5 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE MinSizeRel)
 endif()
 
-file(GLOB SOURCES
-        ./*.cpp
-        )
-
-add_executable(SwastonConsole ${SOURCES})
-target_include_directories(SwastonConsole PRIVATE ./include/)
+add_executable(SwastonConsole main.cpp)
+target_include_directories(SwastonConsole PRIVATE include/)
