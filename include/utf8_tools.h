@@ -3,7 +3,10 @@
 
 #include "utf8_tools.h"
 #include "utf8.h"
+
 #include <stdint.h>
+#include <stdlib.h>
+
 #include <string>
 #include <vector>
 

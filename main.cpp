@@ -2,7 +2,6 @@
 #include "include/swaston_generator.h"
 
 #include <stdio.h>
-#include <cstdlib>
 #include <string>
 
 #ifdef _WIN32
@@ -17,7 +16,7 @@
 int wmain(int argc, wchar_t **wargv) {
     std::vector<std::string> vec_argv;
     vec_argv.reserve(argc);
-    for (int i = 0; i < argc; i++) { // create a vector of utf-8 strings
+    for (int i = 0; i < argc; i++) {
         vec_argv.push_back(utf16wstring_to_utf8string(wargv[i]));
     }
 #else
@@ -30,28 +29,30 @@ int wmain(int argc, wchar_t **wargv) {
 #endif
 
     std::string input;
-    if (argc == 1) { // case no input
+    const std::string APP_NAME(vec_argv[0]);
+    const std::string USAGE_TEXT("Usage: " + APP_NAME.substr(APP_NAME.rfind(sep)) + " [word]\n");
+    if (argc == 1) {
+        // case no input
         fprintf(stdout, "input: ");
         try {
-            input = utf8_getstring();
+            while (true) {
+                input = utf8_getstring();
+                if (!input.empty()) { break; };
+            }
         }
         catch (std::runtime_error) {
             fprintf(stdout, "Cannot set input mode to UTF-16");
-            exit(-1);
+            exit(EXIT_FAILURE);
         }
         catch (std::bad_alloc) {
             fprintf(stdout, "Cannot allocate needed memory");
-            exit(-1);
+            exit(EXIT_FAILURE);
         }
 
-    } else if (
-            argc > 2 ||
-            (argc == 2 &&
-             (vec_argv[1] == "--help" || vec_argv[1] == "-h"))
-            ) { // case too many arguments(not "" enclosed) or help cmd as input
-        std::string name(vec_argv[0]);
-        utf8_print("Usage: " + utf8_substr(name, name.rfind(sep) + 1) + " [word]\n");
-        exit(0);
+    } else if (argc > 2 || (argc == 2 && (vec_argv[1] == "--help" || vec_argv[1] == "-h"))) {
+        // case too many arguments(not "" enclosed) or help cmd as input
+        utf8_print(USAGE_TEXT);
+        exit(EXIT_SUCCESS);
     } else { // case argv input
         input.append(vec_argv[1]);
         if (!utf8::is_valid(input.begin(), input.end())) {
@@ -61,9 +62,12 @@ int wmain(int argc, wchar_t **wargv) {
         }
     }
     size_t dist = utf8::distance(input.begin(), input.end());
-    if (dist == 0) { // input is empty (instant EOF or eol)
-        exit(0);
-    } else if (dist == 1) { // input takes only one utf-8 char, repeat it 3 times
+    if (dist == 0) {
+        // input is empty (instant EOF or eol)
+        utf8_print(USAGE_TEXT);
+        exit(EXIT_SUCCESS);
+    } else if (dist == 1) {
+        // input takes only one utf-8 char, repeat it 3 times
         input = utf8_repeat(input, 3);
     }
     try {
@@ -71,8 +75,8 @@ int wmain(int argc, wchar_t **wargv) {
     }
     catch (std::runtime_error) {
         fprintf(stdout, "Cannot set output mode to UTF-16");
-        exit(-1);
+        exit(EXIT_FAILURE);
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }

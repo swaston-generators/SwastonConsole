@@ -2,6 +2,9 @@
 #define SWASTON_GENERATOR_H
 
 #include <string>
+
+#include <stdio.h>
+
 #include "utf8.h"
 #include "utf8_tools.h"
 
