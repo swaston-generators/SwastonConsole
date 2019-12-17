@@ -20,12 +20,12 @@ int wmain(int argc, wchar_t **wargv) {
         vec_argv.push_back(utf16wstring_to_utf8string(wargv[i]));
     }
 #else
-    int main(int argc, char **argv) {
-    std::vector<std::string> vec_argv;
-    vec_argv.reserve(argc);
-    for(int i=0; i< argc; i++){
-    vec_argv.push_back((std::string)argv[i]);
-    }
+int main(int argc, char **argv) {
+     std::vector<std::string> vec_argv;
+     vec_argv.reserve(argc);
+     for(int i=0; i< argc; i++){
+      vec_argv.push_back((std::string)argv[i]);
+     }
 #endif
 
     std::string input;

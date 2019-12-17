@@ -17,7 +17,7 @@ std::string generate_swaston(const std::string &s) {
             r_spaced_word = utf8_reverse(utf8_join(s, " ")),
             l_word = utf8_reverse(s),
             center = l_spaced_word + utf8_substr(r_spaced_word, 1) + '\n',
-            tab_pre = utf8_repeat(" ", utf8::distance(r_spaced_word.begin(), r_spaced_word.end()) - size_t(2)),
+            tab_pre = std::string(utf8::distance(r_spaced_word.begin(), r_spaced_word.end()) - size_t(2), ' '),
             tab_post = tab_pre + " ", // extended tab
             upper,
             lower,

@@ -91,14 +91,6 @@ std::string utf8_substr(const std::string &s, size_t st, size_t en = 0) {
     return result;
 }
 
-std::string utf8_repeat(const std::string &s, size_t n) {
-    std::string result;
-    for (size_t c = 1; c <= n; c++) {
-        result.append(s);
-    }
-    return result;
-}
-
 std::vector<std::string> utf8_to_vector(const std::string &s) {
     std::string::const_iterator begin = s.begin();
     std::string::const_iterator end = s.end();
