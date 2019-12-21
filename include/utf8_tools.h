@@ -120,6 +120,14 @@ std::string utf16wstring_to_utf8string(const std::wstring &ws) {
     return result;
 }
 
+std::string utf8_repeat(const std::string &s, size_t n) {
+    std::string result;
+    for (size_t i = 0; i < n; i++) {
+        result += s;
+    }
+    return result;
+
+}
 
 void utf8_print(const std::string &s) {
 #ifdef _WIN32
