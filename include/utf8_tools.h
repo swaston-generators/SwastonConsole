@@ -6,15 +6,28 @@
 
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include <string>
 #include <vector>
 
 #ifdef _WIN32
+    #include <io.h>
+    #include <fcntl.h>
 
-#include <io.h>
-#include <fcntl.h>
-
+    #define PLATFORM_CHAR wchar_t
+    #define PLATFORM_EOF WEOF
+    #define TO_PLATFORM_STR(s) (L ## s)
+    #define PLATFORM_INT  wint_t
+    #define PLATFORM_STRING std::wstring
+    #define unigetchar() getwchar()
+#else
+#define PLATFORM_CHAR char
+    #define PLATFORM_EOF EOF
+    #define TO_PLATFORM_STR(s) (s)
+    #define PLATFORM_INT  int
+    #define PLATFORM_STRING std::string
+    #define unigetchar() getchar()
 #endif
 
 std::string utf8_join(const std::string &s, const std::string &separator) {
@@ -32,7 +45,6 @@ std::string utf8_join(const std::string &s, const std::string &separator) {
         } else {
             break;
         }
-
     }
     return result;
 
@@ -136,87 +148,44 @@ void utf8_print(const std::string &s) {
     if (mode == -1) {
         throw std::runtime_error("Cannot set output mode to UTF-16");
     }
-    fwprintf(stdout, L"%s", utf8string_to_utf16_wstring(s).c_str());
+    wprintf(L"%s", utf8string_to_utf16_wstring(s).c_str());
     mode = _setmode(_fileno(stdout), mode);
 
     if (mode == -1) {
         throw std::runtime_error("Cannot revert output mode");
     }
 #else
-    fprintf(stdout, "%s", s.c_str());
+    printf("%s", s.c_str());
 #endif
 }
 
 std::string utf8_getstring() {
 #ifdef _WIN32 // platform-specific code
-#define platform_char wchar_t
-#define end_of_file WEOF
-#define strtype(s) L ## s
-#define platform_int  wint_t
-#define unigetchar() getwchar()
-
     int mode = _setmode(_fileno(stdin), _O_U16TEXT);
     if (mode == -1) {
         throw std::runtime_error("Cannot set input mode to UTF-16");
     }
-
-#else
-#define platform_char char
-#define end_of_file EOF
-#define strtype(s) s
-#define platform_int  int
-#define unigetchar() getchar()
-
 #endif // ~platform-specific code
-    const size_t buf_size = 8;
-    platform_char *p_str = (platform_char *) (malloc(sizeof(platform_char) * buf_size));
-    if (p_str == NULL) {
-        throw std::bad_alloc();
-    }
-
-    size_t
-            current_size = buf_size,
-            i = 0;
-    platform_int tmp_int; // wint_t if windows, else int
-
-
+    PLATFORM_STRING storage;
+    PLATFORM_INT ch; // wint_t if windows, else int
     while (true) {
-        tmp_int = unigetchar();
-        if (tmp_int == strtype('\n') ||
-            (tmp_int == end_of_file)) {
+        ch = unigetchar();
+        if (ch == TO_PLATFORM_STR('\n') ||
+            (ch == PLATFORM_EOF)) {
             break;
         }
-        p_str[i] = (platform_char) tmp_int;
-
-        // if i reached maximize size - realloc size
-        if (current_size == ++i) {
-            current_size = i + buf_size;
-            platform_char *mem = (platform_char *) realloc(p_str, sizeof(platform_char) * current_size);
-
-            if (mem == NULL) {
-                free(p_str);
-                throw std::bad_alloc();
-            }
-            p_str = mem;
-        }
-
+        storage.push_back((PLATFORM_CHAR) ch);
     }
-
-    p_str[i] = strtype('\0');
 #ifdef _WIN32
     mode = _setmode(_fileno(stdin), mode);
     if (mode == -1) {
         throw std::runtime_error("Cannot revert input mode");
     }
-    std::string s(utf16wstring_to_utf8string((platform_char *) p_str));
+    std::string s(utf16wstring_to_utf8string(storage));
 #else
-    std::string s((platform_char*)p_str);
-
+    std::string s(storage);
 #endif
-//free it
-    free(p_str);
     return s;
-
 }
 
 
